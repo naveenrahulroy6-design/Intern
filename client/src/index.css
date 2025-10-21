@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 224 71% 4%;
+    
+    --card-background: 0 0% 100%;
+    --card-border: 220 13% 91%;
+    --card-foreground: 224 71% 4%;
+    
+    --popover-background: 0 0% 100%;
+    --popover-border: 220 13% 91%;
+    --popover-foreground: 224 71% 4%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary-background: 220 14% 95%;
+    --secondary-border: 220 13% 88%;
+    --secondary-foreground: 224 71% 15%;
+    
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 9% 46%;
+    
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 13% 91%;
+    --input-background: 0 0% 100%;
+    --input-border: 220 13% 85%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.8rem;
+    --success: 142 71% 45%;
+    --warning: 48 96% 53%;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    position: relative;
+    overflow-x: hidden;
+    background-image: radial-gradient(hsl(var(--border)) 0.5px, transparent 0);
+    background-size: 15px 15px;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 6px; border: 3px solid hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+  
+  /* Better focus visibility */
+  *:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring)) !important;
+  }
+
+  /* Custom Calendar Icon */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24" fill="%23334155"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 1.2rem;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+  }
+}

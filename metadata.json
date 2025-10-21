@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Complete HR Management System",
+  "description": "A comprehensive Human Resources Management System built with React, TypeScript, and Tailwind CSS. This is a full-stack web application for managing employees, departments, attendance, leave requests, payroll, and generating reports.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,14 @@
+{
+  "name": "hrms-fullstack-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root for the HRMS full-stack application",
+  "scripts": {
+    "install": "npm install --prefix client && npm install --prefix server",
+    "dev": "npm run dev --prefix server & npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server"
+  },
+  "author": "",
+  "license": "ISC"
+}

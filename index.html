@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HRMS - Complete HR Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --background: 220 20% 97%;
+        --foreground: 224 71% 4%;
+        
+        --card-background: 0 0% 100%;
+        --card-border: 220 13% 91%;
+        --card-foreground: 224 71% 4%;
+        
+        --popover-background: 0 0% 100%;
+        --popover-border: 220 13% 91%;
+        --popover-foreground: 224 71% 4%;
+
+        --primary: 217 91% 60%;
+        --primary-foreground: 0 0% 100%;
+        
+        --secondary-background: 220 14% 95%;
+        --secondary-border: 220 13% 88%;
+        --secondary-foreground: 224 71% 15%;
+        
+        --muted: 220 14% 95%;
+        --muted-foreground: 220 9% 46%;
+        
+        --accent: 217 91% 60%;
+        --accent-foreground: 0 0% 100%;
+        
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+        
+        --border: 220 13% 91%;
+        --input-background: 0 0% 100%;
+        --input-border: 220 13% 85%;
+        --ring: 217 91% 60%;
+
+        --radius: 0.8rem;
+        --success: 142 71% 45%;
+        --warning: 48 96% 53%;
+      }
+
+      body {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+        font-family: 'Inter', sans-serif;
+        font-size: 16px;
+        position: relative;
+        overflow-x: hidden;
+        background-image: radial-gradient(hsl(var(--border)) 0.5px, transparent 0);
+        background-size: 15px 15px;
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 12px; height: 12px; }
+      ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+      ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 6px; border: 3px solid hsl(var(--background)); }
+      ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+      
+      /* Better focus visibility */
+      *:focus-visible {
+        outline: none !important;
+        box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring)) !important;
+      }
+
+      /* Global transitions for smoother UI */
+      *, ::before, ::after {
+        transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, transform, box-shadow, backdrop-filter;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
+      }
+
+      /* Custom Calendar Icon */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+          cursor: pointer;
+          background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24" fill="%23334155"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>');
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: 1.2rem;
+          opacity: 0.6;
+          transition: opacity 0.2s;
+      }
+      input[type="date"]::-webkit-calendar-picker-indicator:hover {
+          opacity: 1;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+             fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              border: 'hsl(var(--border))',
+              input: {
+                DEFAULT: 'hsl(var(--input-border))',
+                background: 'hsl(var(--input-background))'
+              },
+              ring: 'hsl(var(--ring))',
+              background: 'hsl(var(--background))',
+              foreground: 'hsl(var(--foreground))',
+              primary: {
+                DEFAULT: 'hsl(var(--primary))',
+                foreground: 'hsl(var(--primary-foreground))',
+              },
+              secondary: {
+                DEFAULT: 'hsl(var(--secondary-background))',
+                border: 'hsl(var(--secondary-border))',
+                foreground: 'hsl(var(--secondary-foreground))',
+              },
+              destructive: {
+                DEFAULT: 'hsl(var(--destructive))',
+                foreground: 'hsl(var(--destructive-foreground))',
+              },
+              muted: {
+                DEFAULT: 'hsl(var(--muted))',
+                foreground: 'hsl(var(--muted-foreground))',
+              },
+              accent: {
+                DEFAULT: 'hsl(var(--accent))',
+                foreground: 'hsl(var(--accent-foreground))',
+              },
+              popover: {
+                DEFAULT: 'hsl(var(--popover-background))',
+                border: 'hsl(var(--popover-border))',
+                foreground: 'hsl(var(--popover-foreground))',
+              },
+              card: {
+                DEFAULT: 'hsl(var(--card-background))',
+                border: 'hsl(var(--card-border))',
+                foreground: 'hsl(var(--card-foreground))',
+              },
+              success: 'hsl(var(--success))',
+              warning: 'hsl(var(--warning))',
+            },
+            borderRadius: {
+              xl: `calc(var(--radius) + 4px)`,
+              lg: `var(--radius)`,
+              md: `calc(var(--radius) - 4px)`,
+              sm: `calc(var(--radius) - 6px)`,
+            },
+            boxShadow: {
+              'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+              'DEFAULT': '0 4px 12px 0 rgba(0,0,0,0.05)',
+              'md': '0 6px 16px -3px rgba(0,0,0,0.07)',
+              'lg': '0 10px 25px -4px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.08)',
+              'xl': '0 20px 40px -10px rgba(0,0,0,0.1), 0 10px 15px -5px rgba(0,0,0,0.08)',
+              'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
+            },
+            keyframes: {
+              'fade-in': { from: { opacity: '0' }, to: { opacity: '1' } },
+              'fade-out': { from: { opacity: '1' }, to: { opacity: '0' } },
+              'slide-in-from-right': { from: { transform: 'translateX(1rem)', opacity: 0 }, to: { transform: 'translateX(0)', opacity: 1 } },
+              'pop-in': { 
+                '0%': { transform: 'scale(0.95)', opacity: 0 }, 
+                '100%': { transform: 'scale(1)', opacity: 1 } 
+              },
+              'slide-down-fade': { 
+                '0%': { opacity: '0', transform: 'translateY(-10px)' }, 
+                '100%': { opacity: '1', transform: 'translateY(0)' } 
+              },
+            },
+            animation: {
+              'fade-in': 'fade-in 0.3s ease-out forwards',
+              'fade-out': 'fade-out 0.3s ease-in forwards',
+              'slide-in-from-right': 'slide-in-from-right 0.3s ease-out forwards',
+              'pop-in': 'pop-in 0.3s ease-out forwards',
+              'slide-down-fade': 'slide-down-fade 0.3s ease-out forwards',
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
+    "axios": "https://aistudiocdn.com/axios@^1.12.2",
+    "vite": "https://aistudiocdn.com/vite@^7.1.9",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.4",
+    "@prisma/client": "https://aistudiocdn.com/@prisma/client@^6.17.1",
+    "bcryptjs": "https://aistudiocdn.com/bcryptjs@^3.0.2",
+    "express": "https://aistudiocdn.com/express@^5.1.0",
+    "cors": "https://aistudiocdn.com/cors@^2.8.5",
+    "dotenv": "https://aistudiocdn.com/dotenv@^17.2.3",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "url": "https://aistudiocdn.com/url@^0.11.4",
+    "jsonwebtoken": "https://aistudiocdn.com/jsonwebtoken@^9.0.2",
+    "@prisma/client/": "https://aistudiocdn.com/@prisma/client@^6.17.1/",
+    "speakeasy": "https://aistudiocdn.com/speakeasy@^2.0.0",
+    "express-async-handler": "https://aistudiocdn.com/express-async-handler@^1.2.0",
+    "buffer": "https://aistudiocdn.com/buffer@^6.0.3",
+    "process": "https://aistudiocdn.com/process@^0.11.10"
+  }
+}
+</script>
+  </head>
+  <body class="antialiased">
+    <div id="root"></div>
+    <script type="text/babel" data-type="module" data-presets="react,typescript" src="/index.tsx"></script>
+  </body>
+</html>
