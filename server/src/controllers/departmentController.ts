@@ -16,7 +16,7 @@ export const getDepartments = asyncHandler(async (req: Request, res: Response) =
 // @route   POST /api/departments
 // @access  Private (Admin/HR)
 export const createDepartment = asyncHandler(async (req: Request, res: Response) => {
-    const { name, managerId } = req.body;
+    const { name, managerId } = req.body as { name?: string; managerId?: string };
     if (!name) {
         res.status(400);
         throw new Error('Department name is required');
@@ -26,7 +26,7 @@ export const createDepartment = asyncHandler(async (req: Request, res: Response)
         data: {
             name,
             managerId: managerId || null,
-        }
+        },
     });
     res.status(201).json(department);
 });

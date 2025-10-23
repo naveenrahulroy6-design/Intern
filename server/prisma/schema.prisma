@@ -1,1 +1,115 @@
-~�er��z{l��������f���^��+&h
+// Prisma schema for HRMS backend
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  role         String   @default("Employee")
+  avatarUrl    String
+  isMfaSetup   Boolean  @default(false)
+  mfaSecret    String
+  employeeId   String   @unique
+  phone        String
+  departmentId String?
+  joinDate     DateTime
+  status       String   @default("Active")
+  employeeType String
+  salary       Float
+  passwordHash String
+
+  department        Department? @relation("DepartmentEmployees", fields: [departmentId], references: [id])
+  managedDepartment Department? @relation("DepartmentManager")
+  attendance        AttendanceRecord[]
+  leaves            LeaveRequest[]
+  balances          LeaveBalance[]
+  payroll           PayrollRecord[]
+}
+
+model Department {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  managerId String?   @unique
+
+  employees Employee[] @relation("DepartmentEmployees")
+  manager   Employee?  @relation("DepartmentManager", fields: [managerId], references: [id])
+}
+
+model AttendanceRecord {
+  id         String   @id @default(uuid())
+  employeeId String
+  date       DateTime
+  status     String
+  clockIn    DateTime?
+  clockOut   DateTime?
+  workHours  Int?
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, date], name: "employeeId_date")
+}
+
+model LeaveRequest {
+  id           String   @id @default(uuid())
+  employeeId   String
+  employeeName String
+  leaveType    String
+  startDate    DateTime
+  endDate      DateTime
+  reason       String
+  status       String
+  days         Int
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model LeaveBalance {
+  id         String   @id @default(uuid())
+  employeeId String
+  type       String
+  total      Int
+  used       Int
+  pending    Int
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, type])
+}
+
+model PayrollRecord {
+  id         String   @id @default(uuid())
+  employeeId String
+  month      Int
+  year       Int
+  basic      Float
+  allowances String
+  deductions String
+  grossPay   Float
+  netPay     Float
+  status     String
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model Holiday {
+  id   String   @id @default(uuid())
+  date DateTime
+  name String
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  timestamp DateTime @default(now())
+  read      Boolean  @default(false)
+  link      String?
+}

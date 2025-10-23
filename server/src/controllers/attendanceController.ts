@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import prisma from '../db.js';
-import { AttendanceStatus } from '@prisma/client';
+// Using string values aligned with Prisma schema enums for SQLite compatibility
+type AttendanceStatus = 'Present' | 'Absent' | 'Leave' | 'HalfDay' | 'NotMarked';
 
 // @desc    Get all attendance records (Admin/HR/Manager)
 // @route   GET /api/attendance
@@ -67,13 +68,13 @@ export const clockIn = asyncHandler(async (req: any, res: Response) => {
         },
         update: {
             clockIn: new Date(),
-            status: AttendanceStatus.Present,
+            status: 'Present',
         },
         create: {
             employeeId: req.user.id,
             date: today,
             clockIn: new Date(),
-            status: AttendanceStatus.Present,
+            status: 'Present',
         }
     });
 
@@ -119,29 +120,45 @@ export const clockOut = asyncHandler(async (req: any, res: Response) => {
 // @route   PUT /api/attendance/status
 // @access  Private/Admin/HR
 export const updateAttendanceStatus = asyncHandler(async (req: Request, res: Response) => {
-    const { employeeId, date, status } = req.body;
-    
+    const { employeeId, date, status } = req.body as {
+        employeeId?: string;
+        date?: string;
+        status?: string;
+    };
+
     if (!employeeId || !date || !status) {
         res.status(400);
         throw new Error('Please provide employeeId, date, and status');
     }
-    
+
+    // Normalize client-facing values to Prisma enum
+    const statusMap: Record<string, AttendanceStatus> = {
+        Present: AttendanceStatus.Present,
+        Absent: AttendanceStatus.Absent,
+        Leave: AttendanceStatus.Leave,
+        'Half-Day': AttendanceStatus.HalfDay,
+        HalfDay: AttendanceStatus.HalfDay,
+        'Not Marked': AttendanceStatus.NotMarked,
+        NotMarked: AttendanceStatus.NotMarked,
+    };
+    const mappedStatus = statusMap[status] ?? (status as AttendanceStatus);
+
     const recordDate = new Date(date);
-    recordDate.setUTCHours(0,0,0,0);
+    recordDate.setUTCHours(0, 0, 0, 0);
 
     const updatedRecord = await prisma.attendanceRecord.upsert({
         where: {
             employeeId_date: {
                 employeeId,
                 date: recordDate,
-            }
+            },
         },
-        update: { status: status as AttendanceStatus },
+        update: { status: mappedStatus },
         create: {
             employeeId,
             date: recordDate,
-            status: status as AttendanceStatus
-        }
+            status: mappedStatus,
+        },
     });
 
     res.json(updatedRecord);
