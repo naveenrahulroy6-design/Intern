@@ -105,3 +105,32 @@ You can log in with the following credentials. The password for all demo account
 - `employee@hrms.com`
 
 **Note:** All users will be required to complete a one-time MFA setup upon their first login. You can use an authenticator app like Google Authenticator or Authy.
+
+---
+
+## Troubleshooting
+
+- **DependencyNotFoundError: Could not find dependency: 'react-dom' relative to '/index.tsx'**
+  - This can happen in online sandboxes when the root project is executed instead of the `client` app. Fixes:
+    - Ensure you run the app from `client` (where `react` and `react-dom` are already dependencies):
+      ```bash
+      cd client && npm install && npm run dev
+      ```
+    - If the sandbox executes the root `index.html` and `/index.tsx`, make sure `react` and `react-dom` are present at the root as well. The root `package.json` now includes these dependencies. Run:
+      ```bash
+      npm install
+      ```
+    - Prefer running locally with the root script which starts both servers:
+      ```bash
+      npm run dev
+      ```
+
+- **Port conflicts (5173 or 3001 already in use)**
+  - Stop other running dev servers or change the ports in `client/vite.config.ts` and `server/src/index.ts`.
+
+- **Database not initialized**
+  - If backend errors reference missing tables, run Prisma push from `server`:
+    ```bash
+    cd server && npx prisma db push
+    ```
+
