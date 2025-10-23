@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import prisma from '../db.js';
-import { LeaveStatus, LeaveType } from '@prisma/client';
+type LeaveType = 'Annual' | 'Sick' | 'Casual' | 'Unpaid';
+type LeaveStatus = 'Pending' | 'Approved' | 'Rejected';
 
 // @desc    Get all leave requests (Admin/HR/Manager)
 // @route   GET /api/leaves
@@ -65,7 +66,7 @@ export const submitLeaveRequest = asyncHandler(async (req: any, res: Response) =
         where: { employeeId: req.user.id, type: leaveType }
     });
 
-    if (leaveType !== LeaveType.Unpaid && (!balance || (balance.total - balance.used - balance.pending) < days)) {
+    if (leaveType !== 'Unpaid' && (!balance || (balance.total - balance.used - balance.pending) < days)) {
         res.status(400);
         throw new Error('Insufficient leave balance');
     }
@@ -81,12 +82,12 @@ export const submitLeaveRequest = asyncHandler(async (req: any, res: Response) =
             endDate: eDate,
             reason,
             days,
-            status: LeaveStatus.Pending,
+            status: 'Pending',
         }
     });
 
     // Update pending balance
-    if (leaveType !== LeaveType.Unpaid) {
+    if (leaveType !== 'Unpaid') {
         await prisma.leaveBalance.update({
             where: { id: balance!.id },
             data: { pending: balance!.pending + days }
@@ -120,7 +121,7 @@ export const actionLeaveRequest = asyncHandler(async (req: Request, res: Respons
     
     if (balance) {
         let used = balance.used;
-        if (status === LeaveStatus.Approved) {
+        if (status === 'Approved') {
             used += request.days;
         }
         await prisma.leaveBalance.update({

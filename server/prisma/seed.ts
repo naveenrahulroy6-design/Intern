@@ -4,11 +4,9 @@ import { Buffer } from 'buffer';
 import process from 'process';
 
 // FIX: Changed to a namespace import to resolve issues where named exports were not being found, likely due to module resolution problems.
-import * as PrismaAll from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import speakeasy from 'speakeasy';
-
-const { PrismaClient, UserRole, EmployeeStatus, EmployeeType, LeaveType } = PrismaAll;
 
 const prisma = new PrismaClient();
 
@@ -43,10 +41,10 @@ async function main() {
     const password123 = await bcrypt.hash('password123', salt);
     
     const employeesData = [
-        { id: 'emp-1', name: 'Admin User', email: 'admin@hrms.com', role: UserRole.Admin, departmentId: hrDept.id, salary: 120000 },
-        { id: 'emp-2', name: 'HR Head', email: 'hr@hrms.com', role: UserRole.HR, departmentId: hrDept.id, salary: 95000 },
-        { id: 'emp-3', name: 'Mike Johnson', email: 'manager@hrms.com', role: UserRole.Manager, departmentId: engDept.id, salary: 110000 },
-        { id: 'emp-4', name: 'Sarah Lee', email: 'employee@hrms.com', role: UserRole.Employee, departmentId: engDept.id, salary: 80000 },
+        { id: 'emp-1', name: 'Admin User', email: 'admin@hrms.com', role: 'Admin', departmentId: hrDept.id, salary: 120000 },
+        { id: 'emp-2', name: 'HR Head', email: 'hr@hrms.com', role: 'HR', departmentId: hrDept.id, salary: 95000 },
+        { id: 'emp-3', name: 'Mike Johnson', email: 'manager@hrms.com', role: 'Manager', departmentId: engDept.id, salary: 110000 },
+        { id: 'emp-4', name: 'Sarah Lee', email: 'employee@hrms.com', role: 'Employee', departmentId: engDept.id, salary: 80000 },
     ];
 
     for (const emp of employeesData) {
@@ -60,8 +58,8 @@ async function main() {
                 employeeId: `EMP${String(1000 + parseInt(emp.id.split('-')[1]))}`,
                 avatarUrl: generateAvatar(emp.name),
                 joinDate: new Date('2023-01-15T00:00:00.000Z'),
-                status: EmployeeStatus.Active,
-                employeeType: EmployeeType.Permanent,
+                status: 'Active',
+                employeeType: 'Permanent',
                 phone: '555-0199',
             }
         });
@@ -78,10 +76,10 @@ async function main() {
     for (const emp of employees) {
         await prisma.leaveBalance.createMany({
             data: [
-                { employeeId: emp.id, type: LeaveType.Annual, total: 20, used: 0, pending: 0 },
-                { employeeId: emp.id, type: LeaveType.Sick, total: 10, used: 0, pending: 0 },
-                { employeeId: emp.id, type: LeaveType.Casual, total: 5, used: 0, pending: 0 },
-                { employeeId: emp.id, type: LeaveType.Unpaid, total: 99, used: 0, pending: 0 },
+                { employeeId: emp.id, type: 'Annual', total: 20, used: 0, pending: 0 },
+                { employeeId: emp.id, type: 'Sick', total: 10, used: 0, pending: 0 },
+                { employeeId: emp.id, type: 'Casual', total: 5, used: 0, pending: 0 },
+                { employeeId: emp.id, type: 'Unpaid', total: 99, used: 0, pending: 0 },
             ]
         });
     }

@@ -20,12 +20,13 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     const employee = await prisma.employee.findUnique({ where: { email } });
 
     if (employee && (await bcrypt.compare(password, employee.passwordHash))) {
-        // Don't issue the final token here if MFA is enabled but not verified
-        // The frontend will handle the MFA verification step
         const { passwordHash, mfaSecret, ...userWithoutSensitiveData } = employee;
+        const user: any = { ...userWithoutSensitiveData };
+        if (!employee.isMfaSetup) {
+            user.mfaSecret = mfaSecret; // only send secret if not set up
+        }
         res.json({
-            ...userWithoutSensitiveData,
-            mfaSecret: !employee.isMfaSetup ? mfaSecret : undefined, // only send secret if not set up
+            user,
             token: generateToken(employee.id),
         });
     } else {
@@ -38,7 +39,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 // @route   GET /api/auth/me
 // @access  Private
 export const getCurrentUser = asyncHandler(async (req: any, res: Response) => {
-    res.json(req.user);
+    const { passwordHash, mfaSecret, ...safeUser } = req.user || {};
+    res.json(safeUser);
 });
 
 // @desc    Update user profile
